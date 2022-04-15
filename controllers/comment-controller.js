@@ -2,13 +2,12 @@ const { Comment, Pizza } = require('../models');
 
 const commentController = {
   addComment({ params, body }, res) {
-    console.log(body);
     Comment.create(body)
       .then(({ _id }) => {
         return Pizza.findOneAndUpdate(
           { _id: params.pizzaId },
           { $push: { comments: _id } },
-          { new: true }
+          { runValidators: true, new: true }
         );
       })
       .then((dbPizzaData) => {
@@ -25,7 +24,7 @@ const commentController = {
     Comment.findOneAndUpdate(
       { _id: params.commentId },
       { $push: { replies: body } },
-      { new: true }
+      { runValidators: true, new: true }
     )
       .then((dbPizzaData) => {
         if (!dbPizzaData) {
